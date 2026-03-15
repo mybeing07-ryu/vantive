@@ -53,8 +53,7 @@ body {
 
 /* V Watermark (decorative) */
 .header-wm {
-  position: absolute; top: -10px; right: -20px;
-  pointer-events: none; opacity: 1;
+  display: none;
 }
 
 .header-top {
@@ -79,8 +78,9 @@ body {
   Result: cream Vantive wordmark appears on the plum gradient header
 */
 .wordmark-img {
-  height: 30px;
+  height: 26px;
   width: auto;
+  max-width: 100px;
   display: block;
   /* transparent PNG: cream logo shows naturally on plum header */
 }
