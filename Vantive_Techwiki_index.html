@@ -48,7 +48,7 @@
 
     /* Logo area */
     .header-brand {
-      display: flex; align-items: center; gap: 11px;
+      display: flex; align-items: flex-end; gap: 11px;
       background: none; border: none; padding: 0;
       cursor: pointer; border-radius: 8px;
       transition: opacity var(--transition);
@@ -56,7 +56,7 @@
     .header-brand:hover { opacity: 0.82; }
     .header-brand:active { opacity: 0.65; }
     .header-brand img.vantive-logo-img {
-      height: 32px; width: auto; display: block;
+      height: 35px; width: auto; display: block;
     }
     .header-brand .brand-sep {
       width: 1px; height: 18px;
@@ -65,10 +65,11 @@
     .header-brand .techwiki-label {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
                    'Helvetica Neue', sans-serif;
-      font-size: 19px; font-weight: 600;
+      font-size: 23px; font-weight: 600;
       color: #FFFAEB;
       letter-spacing: -0.3px;
       -webkit-font-smoothing: antialiased;
+      line-height: 1;
     }
 
     /* Right pill */
@@ -337,8 +338,8 @@
       .sidebar.open { transform: translateX(0); }
       /* 헤더 모바일 최적화 */
       .header-brand { flex-shrink: 1; min-width: 0; gap: 7px; }
-      .header-brand img.vantive-logo-img { height: 26px; }
-      .header-brand .techwiki-label { font-size: 16px; }
+      .header-brand img.vantive-logo-img { height: 29px; }
+      .header-brand .techwiki-label { font-size: 19px; }
       .header-brand .brand-sep { display: none; }
       .header-pill {
         font-size: 10px; padding: 3px 8px;
