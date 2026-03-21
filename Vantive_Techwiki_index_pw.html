@@ -825,7 +825,7 @@
     if (linkEl && linkEl.classList) linkEl.classList.add('active');
     welcome.style.display = 'none';
     frame.style.display = 'block';
-    frame.src = file;
+    frame.src = file + '?v=' + Date.now();
   }
 
   /* ── Process welcome logo: Pine text on cream bg (base64 embedded → no CORS) ── */
