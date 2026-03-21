@@ -86,7 +86,7 @@
 
     /* ── 히어로 (전체 플럼 배경) ──────────────────────────── */
     .hero {
-      padding: 0 0 72px;
+      padding: 96px 24px 72px;
       text-align: center;
       position: relative; overflow: hidden;
       background: linear-gradient(145deg,
@@ -115,6 +115,7 @@
     }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 4px;
       background: rgba(255,255,255,0.15);
       border: 1px solid rgba(255,255,255,0.3);
       color: rgba(255,255,255,0.92); border-radius: 20px;
@@ -406,10 +407,13 @@
     @media (max-width: 768px) {
       h1 { font-size: 2.4rem; }
       .overview-grid { grid-template-columns: 1fr; }
-      .hero-nav { padding: 16px 20px; }
-      .hero-content { padding: 32px 20px 0; }
+      .hero { padding: 76px 20px 48px; }
       .card-grid { grid-template-columns: 1fr; }
       .stat-item { padding: 14px 20px; }
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 68px 16px 40px; }
+      .hero-logo { height: 20px !important; }
     }
     @media (max-width: 375px) {
       body { overflow-x: hidden; }
