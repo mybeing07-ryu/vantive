@@ -151,9 +151,10 @@ mark{background:rgba(114,37,107,0.13);color:var(--plum);border-radius:2px;paddin
     }
     .part-item:last-child { border-bottom:none; }
     .part-item:active { background:var(--plum-light); }
-    .part-icon { width:28px; height:28px; border-radius:7px; display:flex;
-      align-items:center; justify-content:center; font-size:14px;
-      background:var(--plum-light); flex-shrink:0; }
+    .part-icon { width:36px; height:36px; border-radius:9px; display:flex;
+      align-items:center; justify-content:center;
+      background:var(--plum-light); flex-shrink:0; color:var(--plum); }
+    .part-icon svg { width:20px; height:20px; display:block; }
     .part-name { flex:1; font-size:13px; font-weight:600; color:var(--text); }
     .part-cnt { font-size:11px; color:var(--text3); background:var(--border); padding:2px 7px; border-radius:10px; }
     .part-arr { font-size:16px; color:var(--text3); }
@@ -365,18 +366,18 @@ function renderAlarms(){
 }
 
 var PARTS_DEF=[
-  {key:'acid',label:'Acid Concentrate',icon:'\u{1F9EA}'},
-  {key:'bicarbonate',label:'Bicarbonate Concentrate',icon:'\u{1FAE7}'},
-  {key:'blood pump',label:'Blood Pump',icon:'\u{1FA78}'},
-  {key:'temperature',label:'Temperature Sensor',icon:'\u{1F321}\uFE0F'},
-  {key:'conductivity',label:'Conductivity',icon:'\u2697\uFE0F'},
-  {key:'pressure',label:'Pressure Sensor',icon:'\u{1F4CA}'},
-  {key:'balance',label:'Balance Chamber',icon:'\u2696\uFE0F'},
-  {key:'leak',label:'Leak Detector',icon:'\u{1F4A7}'},
-  {key:'air detector',label:'Air Detector',icon:'\u{1FAC1}'},
-  {key:'flow',label:'Flow Control',icon:'\u{1F504}'},
-  {key:'water',label:'Water Treatment',icon:'\u{1F4A6}'},
-  {key:'dialysate',label:'Dialysate System',icon:'\u{1F52C}'}
+  {key:'acid',label:'Acid Concentrate',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6l1 8H8L9 2z"/><path d="M8 10s-4 4-4 7a8 8 0 0 0 16 0c0-3-4-7-4-7"/></svg>'},
+  {key:'bicarbonate',label:'Bicarbonate Concentrate',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><circle cx="7" cy="8" r="2"/><circle cx="17" cy="8" r="2"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/></svg>'},
+  {key:'blood pump',label:'Blood Pump',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'},
+  {key:'temperature',label:'Temperature Sensor',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>'},
+  {key:'conductivity',label:'Conductivity',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+  {key:'pressure',label:'Pressure Sensor',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="12" x2="16" y2="10"/></svg>'},
+  {key:'balance',label:'Balance Chamber',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="20"/><path d="M5 20h14"/><path d="M5 9l7-6 7 6"/><path d="M4 9l4 8a4 4 0 0 0 8 0l4-8"/></svg>'},
+  {key:'leak',label:'Leak Detector',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>'},
+  {key:'air detector',label:'Air Detector',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>'},
+  {key:'flow',label:'Flow Control',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>'},
+  {key:'water',label:'Water Treatment',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 6V4h12v2"/><rect x="3" y="6" width="18" height="15" rx="2"/><line x1="9" y1="11" x2="9" y2="17"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="15" y1="11" x2="15" y2="17"/></svg>'},
+  {key:'dialysate',label:'Dialysate System',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l2 6H6L8 2z"/><path d="M6 8c0 0-3 4-3 8a9 9 0 0 0 18 0c0-4-3-8-3-8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>'}
 ];
 function renderParts(){
   var html='<p class="parts-info">Tap to search related alarms &rarr;</p><div class="parts-list">';
