@@ -99,7 +99,8 @@ mark{background:rgba(114,37,107,0.13);color:var(--plum);border-radius:2px;paddin
 .empty h3{font-size:17px;font-weight:700;margin-bottom:6px;}
 .empty p{font-size:13px;}
 .notice-bar{background:rgba(16,87,66,0.08);border-bottom:1px solid rgba(16,87,66,0.15);
-padding:7px 18px;font-size:11px;color:var(--pine);display:flex;align-items:center;gap:6px;}
+padding:7px 18px;font-size:11px;color:var(--pine);display:flex;align-items:center;gap:6px;
+position:sticky;top:var(--hdr-h, 120px);z-index:150;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
 .bnav{position:fixed;bottom:0;left:0;right:0;min-height:var(--nav-h);
 background:#B5CFBC;border-top:1.5px solid rgba(114,37,107,0.18);
 display:flex;align-items:flex-start;padding-top:10px;
@@ -162,6 +163,12 @@ flex-shrink:0;-webkit-tap-highlight-color:transparent;}
 .fav-clear-btn{width:100%;margin-top:10px;background:rgba(255,250,235,0.1);border:1.5px solid rgba(255,250,235,0.25);border-radius:10px;color:rgba(255,250,235,0.65);font-size:12px;font-weight:600;padding:9px;cursor:pointer;font-family:inherit;transition:all .15s;}
 .fav-clear-btn:active{background:rgba(255,80,80,0.25);border-color:rgba(255,100,100,0.5);color:#ffaaaa;}
 .fav-item-price{font-size:11.5px;color:var(--text3);margin-top:2px;}
+
+.fav-memo-wrap{margin-top:12px;}
+.fav-memo-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.65;margin-bottom:7px;color:var(--cream);}
+.fav-memo-textarea{width:100%;min-height:90px;border:1.5px solid rgba(255,250,235,0.3);background:rgba(255,250,235,0.1);border-radius:10px;color:var(--cream);font-size:13px;padding:10px 12px;resize:vertical;outline:none;font-family:inherit;line-height:1.6;box-sizing:border-box;}
+.fav-memo-textarea::placeholder{color:rgba(255,250,235,0.35);}
+.fav-memo-textarea:focus{border-color:rgba(255,250,235,0.65);background:rgba(255,250,235,0.15);}
 </style>
 </head>
 <body>
@@ -183,7 +190,7 @@ flex-shrink:0;-webkit-tap-highlight-color:transparent;}
 
 <div class="notice-bar">
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-  2026년 4월1일 기준, 환율에 따라 부품 가격이 변동될 수 있습니다 &middot; 부가세 별도 기준
+  2026년 4월 1일 기준 &middot; 환율에 따라 부품 가격이 변동될 수 있습니다 &middot; 부가세 별도 기준
 </div>
 
 <div class="filt">
@@ -427,6 +434,10 @@ function renderFavs(){
     +(savings>0?'<div class="fav-final-savings">절감액 '+savings.toLocaleString('ko-KR')+'원 ('+disc+'% 할인)</div>':'')
     +'<button class="fav-clear-btn" onclick="clearAllFavs()">&#128465; 즐겨찾기 전체 삭제</button>'
     +'</div>'
+    +'<div class="fav-memo-wrap">'
+    +'<div class="fav-memo-label">&#128221; 메모</div>'
+    +'<textarea class="fav-memo-textarea" id="favMemoArea" placeholder="견적 관련 메모를 입력하세요..." oninput="saveFavMemo()">'+getFavMemo()+'</textarea>'
+    +'</div>'
     +'</div>';
   el.innerHTML='<div style="padding:12px 0 28px">'+html+'</div>';
 }
@@ -483,6 +494,14 @@ function clearAllFavs(){
 function goSearch(kw){
   switchBnav('search',document.querySelector('.bnav-item'));
   sInp.value=kw;SQ=kw;sClr.classList.add('show');go();
+}
+
+function getFavMemo(){
+  try{return localStorage.getItem('vantive26v3_memo')||'';}catch(e){return '';}
+}
+function saveFavMemo(){
+  var el=document.getElementById('favMemoArea');
+  try{if(el)localStorage.setItem('vantive26v3_memo',el.value);}catch(e){}
 }
 
 go();
