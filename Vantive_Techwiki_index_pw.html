@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Vantive TS Techwiki</title>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet">
   <style>
@@ -102,7 +102,7 @@
 
     /* ── Layout ──────────────────────────────────── */
     .app {
-      display: flex; height: 100vh;
+      display: flex; height: 100vh; height: 100dvh;
       padding-top: var(--header-h);
     }
 
@@ -651,6 +651,11 @@
              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
            </svg>`,
+    price: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>`,
   };
 
   /* ── Data ────────────────────────────────────── */
@@ -673,10 +678,16 @@
     {
       id: 'info', label: 'Device Info', icon: SVG.info,
       items: [
-        { label: 'Artis UF Deviation Alarm (505/506)',  file: 'UF_Deviation_alarm_505_506_weightloss.html' },
+        { label: 'UF Deviation Alarm (505/506)',  file: 'UF_Deviation_alarm_505_506_weightloss.html' },
         { label: 'PrisMax 모의 환자 치료 절차',      file: 'prismax_simulated_treatment_kor_v2.html' },
         { label: 'PrisMax 시스템 자가진단 가이드(SST)',   file: 'prismax_sst_guide_kor_v3.html' },
         { label: 'Artis 소독 단계 및 유압 회로 문제 해결', file: 'Artis_disinfection_guide_kor.html' },
+      ]
+    },
+    {
+      id: 'price', label: 'Spare Parts Price', icon: SVG.price,
+      items: [
+        { label: '2026년 Spare Parts Price List', file: 'Vantive_Device_price_search_v3.html' },
       ]
     }
   ];
@@ -888,7 +899,7 @@
 
   /* ── Password Gate ───────────────────────────── */
   (function initPasswordGate() {
-    const CORRECT_PW = '65505';          // ← 비밀번호 변경 시 여기 수정
+    const CORRECT_PW = 'Vantive2025';          // ← 비밀번호 변경 시 여기 수정
     const SESSION_KEY = 'vantive_tw_auth';
 
     const gate  = document.getElementById('pw-gate');
