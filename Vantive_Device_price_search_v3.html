@@ -631,47 +631,47 @@ function printQuote(){
   var rowsH='';
   pitems.forEach(function(it,idx){
     rowsH+='<tr>'
-      +'<td style="text-align:center;">'+(idx+1)+'</td>'
-      +'<td style="text-align:center;font-size:8pt;">'+it.code+'</td>'
-      +'<td style="text-align:left;padding-left:5px;">'+it.desc+'</td>'
-      +'<td style="text-align:center;">EA</td>'
-      +'<td style="text-align:center;">1</td>'
-      +'<td style="text-align:right;padding-right:5px;">'+it.excl.toLocaleString('ko-KR')+'</td>'
-      +'<td style="text-align:right;padding-right:5px;">'+it.excl.toLocaleString('ko-KR')+'</td>'
+      +'<td style="text-align:center;font-size:6pt;">'+(idx+1)+'</td>'
+      +'<td style="text-align:center;font-size:6pt;">'+it.code+'</td>'
+      +'<td style="text-align:left;padding-left:5px;font-size:6pt;">'+it.desc+'</td>'
+      +'<td style="text-align:center;font-size:6pt;">EA</td>'
+      +'<td style="text-align:center;font-size:6pt;">1</td>'
+      +'<td style="text-align:right;padding-right:5px;font-size:6pt;">'+it.excl.toLocaleString('ko-KR')+'</td>'
+      +'<td style="text-align:right;padding-right:5px;font-size:6pt;">'+it.excl.toLocaleString('ko-KR')+'</td>'
       +'<td></td></tr>';
   });
   if(svcChecked&&svcHrs>0){
     rowsH+='<tr>'
-      +'<td style="text-align:center;">'+(pitems.length+1)+'</td>'
-      +'<td style="text-align:center;font-size:8.5pt;">TSFR</td>'
-      +'<td style="text-align:left;padding-left:5px;">Technical Service fee</td>'
-      +'<td style="text-align:center;">hr</td>'
-      +'<td style="text-align:center;">'+svcHrs+'</td>'
-      +'<td style="text-align:right;padding-right:5px;">150,000</td>'
-      +'<td style="text-align:right;padding-right:5px;">'+svcExcl.toLocaleString('ko-KR')+'</td>'
+      +'<td style="text-align:center;font-size:6pt;">'+(pitems.length+1)+'</td>'
+      +'<td style="text-align:center;font-size:6pt;">TSFR</td>'
+      +'<td style="text-align:left;padding-left:5px;font-size:6pt;">Technical Service fee</td>'
+      +'<td style="text-align:center;font-size:6pt;">hr</td>'
+      +'<td style="text-align:center;font-size:6pt;">'+svcHrs+'</td>'
+      +'<td style="text-align:right;padding-right:5px;font-size:6pt;">150,000</td>'
+      +'<td style="text-align:right;padding-right:5px;font-size:6pt;">'+svcExcl.toLocaleString('ko-KR')+'</td>'
       +'<td></td></tr>';
   }
   var filled=pitems.length+(svcChecked&&svcHrs>0?1:0);
   var minR=filled+4;
   for(var i=filled;i<minR;i++){
-    rowsH+='<tr><td style="height:15px;">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+    rowsH+='<tr><td style="height:13px;">&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
   }
 
   // ── 할인 행 ──────────────────────────────────────────────────────────────
   var discH=disc>0
-    ?'<tr><td colspan="6" style="text-align:center;font-weight:700;background:#e8e8e8;">할인 ('+disc+'%)</td>'
+    ?'<tr><td colspan="6" style="text-align:center;font-weight:700;font-size:6pt;background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;">할인 ('+disc+'%)</td>'
      +'<td colspan="2" style="text-align:right;padding-right:6px;font-weight:700;color:#a00;">-'+savings.toLocaleString('ko-KR')+'</td></tr>'
     :'';
 
   // ── 특이사항 내용 ─────────────────────────────────────────────────────────
+  var noteSvcHrs=svcChecked&&svcHrs>0?svcHrs:1;
+  var noteSvcExcl=noteSvcHrs*150000;
   var notes=['* 수리완료 후 30일 이내 계산서 발행',
-    '* 교체된 부품의 보증 기간은 수리 완료일로부터 6개월 입니다.'];
-  if(svcChecked&&svcHrs>0){
-    notes.push('* Technical Service fee Basic : '+svcHrs+' hours');
-    notes.push('* Basic : Standard Rate(150,000 KRW/hour) * '+svcHrs+' hours = '+svcExcl.toLocaleString('ko-KR')+' KRW');
-  }
-  notes.push('* Overtime : Standard Rate(150,000 KRW/hour) *1.5');
-  notes.push('* Extended Overtime : Standard Rate(150,000 KRW/hour) * 2.0');
+    '* 교체된 부품의 보증 기간은 수리 완료일로부터 6개월 입니다.',
+    '* Technical Service fee Basic : '+noteSvcHrs+' hours',
+    '* Basic : Standard Rate(150,000 KRW/hour) * '+noteSvcHrs+' hours = '+noteSvcExcl.toLocaleString('ko-KR')+' KRW',
+    '* Overtime : Standard Rate(150,000 KRW/hour) *1.5',
+    '* Extended Overtime : Standard Rate(150,000 KRW/hour) * 2.0'];
   if(disc>0)
     notes.push('* 할인 '+disc+'% 적용: '+savings.toLocaleString('ko-KR')+'원 차감 (VAT포함 부품 소계 기준)');
   if(memo)notes.push('\n'+memo);
@@ -680,32 +680,32 @@ function printQuote(){
   var css='';
   css+='@page{size:A4 portrait;margin:14mm 13mm 14mm 13mm;}';
   css+='*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}';
-  css+='body{font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;font-size:8.5pt;color:#000;background:#FFFAEB;width:100%;max-width:100%;overflow:hidden;}';
+  css+='body{font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;font-size:6.5pt;color:#000;background:#FFFAEB;width:100%;max-width:100%;overflow:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;}';
   css+='.doc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}';
   css+='.doc-logo{height:24px;width:auto;display:block;}';
   css+='.doc-title-wrap{flex:1;text-align:center;}';
   css+='.np{text-align:center;padding:7px 12px;background:#72256B;color:#fff;border-radius:6px;margin-bottom:10px;font-size:9pt;}';
   css+='.np button{background:#105742;color:#fff;border:none;padding:6px 20px;border-radius:5px;font-size:9.5pt;cursor:pointer;margin-left:10px;font-family:inherit;font-weight:700;}';
-  css+='@media print{body,td,th,*{font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif!important;}.np{display:none;}[contenteditable]:hover{background:transparent!important;}.g,.gwide,.rot,.ith th,.tot-g{background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}table,td,th{border-color:#888!important;}}';
-  css+='h1.dt{text-align:center;font-size:23pt;font-weight:900;letter-spacing:0.5em;padding:9px 0 8px;border-bottom:3px solid #333;margin-bottom:10px;}';
+  css+='@media print{body,td,th,*{font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif!important;font-size:6.5pt;}.np{display:none;}[contenteditable]:hover{background:transparent!important;}.g,.gwide,.rot,.ith th,.tot-g{background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}table,td,th{border-color:#888!important;}}';
+  css+='h1.dt{text-align:center;font-size:18pt;font-weight:900;letter-spacing:0.4em;padding:7px 0 6px;border-bottom:3px solid #333;margin-bottom:10px;}';
   css+='table{border-collapse:collapse;width:100%;table-layout:fixed;max-width:100%;}';
-  css+='td,th{border:1px solid #888;padding:2.5px 4px;font-size:8pt;vertical-align:middle;overflow:hidden;word-break:break-all;}';
+  css+='td,th{border:1px solid #888;padding:2px 3px;font-size:6pt;vertical-align:middle;overflow:hidden;word-break:break-all;}';
   css+='.g{background:#cccccc!important;font-weight:700;text-align:center;white-space:nowrap;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
   css+='.gwide{background:#cccccc!important;font-weight:700;text-align:center;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
-  css+='.rot{background:#cccccc!important;font-weight:700;text-align:center;vertical-align:middle;width:20px;line-height:1.9;font-size:8.5pt;padding:3px 3px;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
-  css+='.ith th{background:#cccccc!important;text-align:center;font-weight:700;padding:4px 3px;font-size:8pt;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
-  css+='.tot-g{background:#cccccc!important;text-align:center;font-weight:700;font-size:8.5pt;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
+  css+='.rot{background:#cccccc!important;font-weight:700;text-align:center;vertical-align:middle;width:20px;line-height:1.9;font-size:6pt;padding:2px 3px;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
+  css+='.ith th{background:#cccccc!important;text-align:center;font-weight:700;padding:3px 3px;font-size:6pt;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
+  css+='.tot-g{background:#cccccc!important;text-align:center;font-weight:700;font-size:6pt;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
   css+='.tot-v{text-align:right;padding-right:8px;font-weight:700;}';
   css+='.qbox{display:flex;border:1px solid #888;margin:8px 0 10px;align-items:stretch;}';
-  css+='.ql{background:#cccccc;padding:5px 11px;font-weight:700;border-right:1px solid #888;white-space:nowrap;display:flex;align-items:center;line-height:1.5;font-size:8.5pt;}';
-  css+='.qv{padding:5px 11px;font-size:12pt;font-weight:900;flex:1;display:flex;align-items:center;}';
-  css+='.qk{padding:5px 11px;font-weight:700;display:flex;align-items:center;justify-content:flex-end;font-size:9pt;}';
+  css+='.ql{background:#cccccc;padding:4px 9px;font-weight:700;border-right:1px solid #888;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.5;font-size:5.5pt;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
+  css+='.qv{padding:4px 9px;font-size:7pt;font-weight:900;flex:1;display:flex;align-items:center;justify-content:center;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
+  css+='.qk{padding:4px 9px;font-weight:700;display:flex;align-items:center;justify-content:flex-end;font-size:7pt;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
   css+='[contenteditable]{outline:none;min-width:8px;}';
   css+='[contenteditable]:hover{background:#fffff0;cursor:text;}';
 
   // ── HTML 조립 ─────────────────────────────────────────────────────────────
   var d='';
-  d+='<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">';
+  d+='<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=794,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">';
   d+='<title>견적서 - Vantive Korea<\/title>';
   d+='<style>'+css+'<\/style><\/head><body>';
 
@@ -743,7 +743,7 @@ function printQuote(){
 
   // 공급자 table
   d+='<table style="flex:1.2;min-width:0;overflow:hidden;">';
-  d+='<colgroup><col style="width:20px"><col style="width:58px"><col><col style="width:46px"><col><\/colgroup>';
+  d+='<colgroup><col style="width:20px"><col style="width:54px"><col><col style="width:54px"><col><\/colgroup>';
   d+='<tr>';
   d+='<td class="rot" rowspan="7">공<br>급<br>자<\/td>';
   d+='<td class="g" colspan="2" style="text-align:center;">사업자등록번호<\/td>';
@@ -751,7 +751,7 @@ function printQuote(){
   d+='<\/tr>';
   d+='<tr>';
   d+='<td class="g" style="text-align:justify;text-align-last:justify;padding:2px 5px;">상&nbsp;호<\/td>';
-  d+='<td contenteditable="true">㈜ 밴티브(Vantive Korea)<\/td>';
+  d+='<td contenteditable="true" style="white-space:normal;">㈜ 밴티브<br>(Vantive Korea)<\/td>';
   d+='<td class="g" style="text-align:justify;text-align-last:justify;padding:2px 5px;">대&nbsp;표&nbsp;자<\/td>';
   d+='<td contenteditable="true">임광혁<\/td>';
   d+='<\/tr>';
@@ -775,7 +775,8 @@ function printQuote(){
   d+='<\/div>';
 
   // 소제목
-  d+='<p style="font-size:10.5pt;font-weight:700;margin:6px 0 6px;">아래와 같이 견적 합니다.<\/p>';
+  d+='<hr style="border:none;border-top:2.5px solid #444;margin:6px 0 0;width:100%;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;"\/>';
+  d+='<p style="font-size:7pt;font-weight:700;margin:4px 0 4px;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;">아래와 같이 견적 합니다.<\/p>';
 
   // 견적 금액 박스
   d+='<div class="qbox">';
@@ -803,8 +804,8 @@ function printQuote(){
   d+='<td colspan="2" class="tot-v">₩'+subtotalExcl.toLocaleString('ko-KR')+'<\/td><\/tr>';
   d+='<tr><td colspan="6" class="tot-g">부가세<\/td>';
   d+='<td colspan="2" class="tot-v">₩'+vat.toLocaleString('ko-KR')+'<\/td><\/tr>';
-  d+='<tr><td colspan="6" class="tot-g" style="font-size:9pt;">합&nbsp;&nbsp;&nbsp;계<\/td>';
-  d+='<td colspan="2" class="tot-v" style="font-size:9pt;border-top:2px solid #555;">'+finalAmt.toLocaleString('ko-KR')+'<\/td><\/tr>';
+  d+='<tr><td colspan="6" class="tot-g">합&nbsp;&nbsp;&nbsp;계<\/td>';
+  d+='<td colspan="2" class="tot-v" style="border-top:2px solid #555;">'+finalAmt.toLocaleString('ko-KR')+'<\/td><\/tr>';
   d+='<\/tbody><\/table>';
 
   // 빈 여백 행
@@ -813,7 +814,7 @@ function printQuote(){
   // 특이사항
   d+='<table style="margin-top:3px;border:1px solid #888;width:100%;table-layout:fixed;">';
   d+='<tr><td class="gwide" style="padding:4px 8px;font-weight:700;border-bottom:1px solid #888;">특이사항<\/td><\/tr>';
-  d+='<tr><td contenteditable="true" style="padding:5px 8px;font-size:8pt;line-height:1.75;white-space:pre-wrap;min-height:70px;">'+notes.join("\n")+'<\/td><\/tr>';
+  d+='<tr><td contenteditable="true" style="padding:3px 6px;font-size:6pt;line-height:1.52;white-space:pre-wrap;min-height:60px;">'+notes.join("\n")+'<\/td><\/tr>';
   d+='<\/table>';
 
   d+='<script>setTimeout(function(){window.print();},800);<\/script>';
