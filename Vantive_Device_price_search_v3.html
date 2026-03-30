@@ -169,6 +169,21 @@ flex-shrink:0;-webkit-tap-highlight-color:transparent;}
 .fav-memo-textarea{width:100%;min-height:90px;border:1.5px solid rgba(255,250,235,0.3);background:rgba(255,250,235,0.1);border-radius:10px;color:var(--cream);font-size:13px;padding:10px 12px;resize:vertical;outline:none;font-family:inherit;line-height:1.6;box-sizing:border-box;}
 .fav-memo-textarea::placeholder{color:rgba(255,250,235,0.35);}
 .fav-memo-textarea:focus{border-color:rgba(255,250,235,0.65);background:rgba(255,250,235,0.15);}
+
+.fav-svc-row{display:flex;align-items:center;gap:10px;padding:11px 0 11px;border-bottom:1px solid rgba(255,250,235,0.15);margin-bottom:4px;}
+.fav-svc-chk-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;flex-shrink:0;}
+.fav-svc-chk{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:2px solid rgba(255,250,235,0.5);border-radius:5px;background:rgba(255,250,235,0.1);cursor:pointer;flex-shrink:0;position:relative;transition:all .15s;}
+.fav-svc-chk:checked{background:rgba(255,250,235,0.9);border-color:rgba(255,250,235,0.9);}
+.fav-svc-chk:checked::after{content:'';position:absolute;left:4px;top:1px;width:6px;height:10px;border:2px solid var(--pine);border-top:none;border-left:none;transform:rotate(40deg);}
+.fav-svc-label{font-size:13px;font-weight:700;color:var(--cream);cursor:pointer;}
+.fav-svc-badge{font-size:10px;background:rgba(255,250,235,0.15);border:1px solid rgba(255,250,235,0.25);border-radius:20px;padding:2px 8px;color:rgba(255,250,235,0.7);white-space:nowrap;}
+.fav-svc-right{display:flex;align-items:center;gap:7px;margin-left:auto;}
+.fav-svc-hour-input{width:52px;border:1.5px solid rgba(255,250,235,0.4);background:rgba(255,250,235,0.12);border-radius:8px;color:var(--cream);font-size:15px;font-weight:700;text-align:center;padding:5px 4px;outline:none;-moz-appearance:textfield;font-family:inherit;}
+.fav-svc-hour-input::-webkit-outer-spin-button,.fav-svc-hour-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.fav-svc-hour-input:focus{border-color:rgba(255,250,235,0.75);background:rgba(255,250,235,0.2);}
+.fav-svc-hour-input:disabled{opacity:0.35;cursor:not-allowed;}
+.fav-svc-unit{font-size:12px;opacity:.7;}
+.fav-svc-amt{font-size:13px;font-weight:700;white-space:nowrap;min-width:80px;text-align:right;}.fav-svc-vat{display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:110px;}.fav-svc-vat-excl{font-size:11px;opacity:.65;}.fav-svc-vat-incl{font-size:13px;font-weight:700;}
 </style>
 </head>
 <body>
@@ -411,13 +426,32 @@ function renderFavs(){
   // Summary section
   var disc=parseFloat(document.getElementById('favDiscInput')?document.getElementById('favDiscInput').value:0)||0;
   if(disc<0)disc=0; if(disc>100)disc=100;
+  var svcChecked=document.getElementById('favSvcChk')?document.getElementById('favSvcChk').checked:false;
+  var svcHrs=parseFloat(document.getElementById('favSvcHrs')?document.getElementById('favSvcHrs').value:1)||1;
+  if(svcHrs<0)svcHrs=0;
+  var svcExcl=svcChecked?Math.round(svcHrs*150000):0;
+  var svcIncl=svcChecked?Math.round(svcExcl*1.1):0;
   var savings=Math.round(totalIncl*(disc/100));
-  var finalAmt=totalIncl-savings;
+  var finalAmt=totalIncl+svcIncl-savings;
   html+='<div class="fav-summary" id="favSummaryBox">'
     +'<div class="fav-sum-title">&#128203; 견적 요약 ('+cnt+'개 품목)</div>'
     +'<div class="fav-sum-row"><span class="fav-sum-label">소계 (VAT 별도)</span><span class="fav-sum-val">'+totalExcl.toLocaleString('ko-KR')+'원</span></div>'
     +'<div class="fav-sum-row"><span class="fav-sum-label">소계 (VAT 포함)</span><span class="fav-sum-val">'+totalIncl.toLocaleString('ko-KR')+'원</span></div>'
     +'<hr class="fav-sum-divider">'
+    +'<div class="fav-svc-row">'
+    +'<input class="fav-svc-chk" type="checkbox" id="favSvcChk"'+(svcChecked?' checked':'')+' onchange="calcFavTotal()">'
+    +'<label class="fav-svc-label" for="favSvcChk">Service Fee</label>'
+    +'<span class="fav-svc-badge">150,000원 / hr</span>'
+    +'<div class="fav-svc-right">'
+    +'<input class="fav-svc-hour-input" type="number" id="favSvcHrs" min="0" step="0.5" value="'+svcHrs+'"'+(svcChecked?'':' disabled')+' oninput="calcFavTotal()">'
+    +'<span class="fav-svc-unit">hr</span>'
+    +'<div class="fav-svc-vat" id="favSvcAmt">'
+    +(svcChecked
+      ?'<span class="fav-svc-vat-excl">VAT별도 '+svcExcl.toLocaleString('ko-KR')+'원</span>'
+       +'<span class="fav-svc-vat-incl">VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원</span>'
+      :'<span class="fav-svc-vat-excl">-</span>')
+    +'</div>'
+    +'</div></div>'
     +'<div class="fav-discount-row">'
     +'<span class="fav-discount-label">할인율</span>'
     +'<div class="fav-discount-wrap">'
@@ -431,7 +465,7 @@ function renderFavs(){
     +'</div></div></div>'
     +'<div class="fav-final-box">'
     +'<div class="fav-final-row"><span class="fav-final-label">&#10003; 최종 금액 (VAT 포함)</span><span class="fav-final-val" id="favFinalAmt">'+finalAmt.toLocaleString('ko-KR')+'원</span></div>'
-    +(savings>0?'<div class="fav-final-savings">절감액 '+savings.toLocaleString('ko-KR')+'원 ('+disc+'% 할인)</div>':'')
+    +(function(){var lines=[];if(svcChecked)lines.push('서비스 요금 VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원 ('+svcHrs+'hr)');if(savings>0)lines.push('할인 -'+savings.toLocaleString('ko-KR')+'원 ('+disc+'%)');return lines.length?'<div class="fav-final-savings">'+lines.join(' · ')+'</div>':'';})()
     +'<button class="fav-clear-btn" onclick="clearAllFavs()">&#128465; 즐겨찾기 전체 삭제</button>'
     +'</div>'
     +'<div class="fav-memo-wrap">'
@@ -451,25 +485,46 @@ function calcFavTotal(){
     var it=ITEMS.find(function(x){return String(x.code)===String(code);});
     if(it)totalIncl+=it.incl;
   });
+  // service fee
+  var svcChk=document.getElementById('favSvcChk');
+  var svcHrsEl=document.getElementById('favSvcHrs');
+  var svcAmtEl=document.getElementById('favSvcAmt');
+  var svcChecked=svcChk?svcChk.checked:false;
+  var svcHrs=parseFloat(svcHrsEl?svcHrsEl.value:1)||1;
+  if(svcHrs<0)svcHrs=0;
+  var svcExcl=svcChecked?Math.round(svcHrs*150000):0;
+  var svcIncl=svcChecked?Math.round(svcExcl*1.1):0;
+  // toggle hrs input enabled state
+  if(svcHrsEl)svcHrsEl.disabled=!svcChecked;
+  // update VAT breakdown display
+  if(svcAmtEl){
+    svcAmtEl.innerHTML=svcChecked
+      ?'<span class="fav-svc-vat-excl">VAT별도 '+svcExcl.toLocaleString('ko-KR')+'원</span>'
+       +'<span class="fav-svc-vat-incl">VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원</span>'
+      :'<span class="fav-svc-vat-excl">-</span>';
+  }
   var savings=Math.round(totalIncl*(disc/100));
-  var finalAmt=totalIncl-savings;
+  var finalAmt=totalIncl+svcIncl-savings;
   var finalEl=document.getElementById('favFinalAmt');
   if(finalEl)finalEl.textContent=finalAmt.toLocaleString('ko-KR')+'원';
   // update chip highlights
   document.querySelectorAll('.fav-dchip').forEach(function(c){
     c.classList.toggle('on', parseFloat(c.textContent)===disc);
   });
-  // update savings line — re-render if needed
+  // update savings/detail line
   var box=document.getElementById('favSummaryBox');
   if(box){
     var savEl=box.querySelector('.fav-final-savings');
-    if(savings>0){
+    var detLines=[];
+    if(svcChecked)detLines.push('서비스 요금 VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원 ('+svcHrs+'hr)');
+    if(savings>0)detLines.push('할인 -'+savings.toLocaleString('ko-KR')+'원 ('+disc+'%)');
+    if(detLines.length>0){
       if(!savEl){
         savEl=document.createElement('div');
         savEl.className='fav-final-savings';
         box.querySelector('.fav-final-row').after(savEl);
       }
-      savEl.textContent='절감액 '+savings.toLocaleString('ko-KR')+'원 ('+disc+'% 할인)';
+      savEl.textContent=detLines.join(' · ');
     } else {
       if(savEl)savEl.remove();
     }
