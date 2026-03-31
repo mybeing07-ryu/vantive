@@ -696,8 +696,8 @@ function printQuote(){
   css+='.ith th{background:#cccccc!important;text-align:center;font-weight:700;padding:3px 3px;font-size:6pt;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
   css+='.tot-g{background:#cccccc!important;text-align:center;font-weight:700;font-size:6pt;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}';
   css+='.tot-v{text-align:right;padding-right:8px;font-weight:700;}';
-  css+='.qbox{display:flex;border:1px solid #888;margin:8px 0 10px;align-items:stretch;}';
-  css+='.ql{background:#cccccc;padding:4px 9px;font-weight:700;border-right:1px solid #888;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.5;font-size:5.5pt;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
+  css+='.qbox{display:flex;border:1px solid #888;margin:0 0 10px;align-items:stretch;}';
+  css+='.ql{background:#cccccc;padding:4px 9px;font-weight:700;border-right:1px solid #888;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.5;font-size:6pt;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
   css+='.qv{padding:4px 9px;font-size:7pt;font-weight:900;flex:1;display:flex;align-items:center;justify-content:center;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
   css+='.qk{padding:4px 9px;font-weight:700;display:flex;align-items:center;justify-content:flex-end;font-size:7pt;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
   css+='[contenteditable]{outline:none;min-width:8px;}';
@@ -721,13 +721,17 @@ function printQuote(){
   d+='<h1 class="dt">견 &nbsp; 적 &nbsp; 서<\/h1>';
 
   // 견적일
-  d+='<table style="width:auto;margin-bottom:10px;"><tr>';
-  d+='<td class="g" style="padding:5px 12px;">견적일<\/td>';
-  d+='<td style="padding:5px 20px;min-width:180px;" contenteditable="true">'+dateStr+'<\/td>';
-  d+='<\/tr><\/table>';
+  d+='<div style="display:flex;gap:6px;margin-bottom:8px;width:100%;max-width:100%;overflow:hidden;">';
+  d+='<table style="flex:1;min-width:0;overflow:hidden;">';
+  d+='<colgroup><col style="width:96px"><col><\/colgroup>';
+  d+='<tr><td class="g" style="padding:5px 8px;text-align:center;">견적일<\/td>';
+  d+='<td style="padding:5px 10px;" contenteditable="true">'+dateStr+'<\/td><\/tr>';
+  d+='<\/table>';
+  d+='<div style="flex:1.2;"><\/div>';
+  d+='<\/div>';
 
   // ── 수신 / 공급자 (나란히) ────────────────────────────────────────────────
-  d+='<div style="display:flex;gap:6px;margin-bottom:10px;width:100%;max-width:100%;overflow:hidden;">';
+  d+='<div style="display:flex;gap:6px;margin-bottom:0;width:100%;max-width:100%;overflow:hidden;">';
 
   // 수신 table
   d+='<table style="flex:1;min-width:0;overflow:hidden;">';
@@ -775,8 +779,8 @@ function printQuote(){
   d+='<\/div>';
 
   // 소제목
-  d+='<hr style="border:none;border-top:2.5px solid #444;margin:6px 0 0;width:100%;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;"\/>';
-  d+='<p style="font-size:7pt;font-weight:700;margin:4px 0 4px;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;">아래와 같이 견적 합니다.<\/p>';
+  d+='<hr style="border:none;border-top:2.5px solid #444;margin:6px 0 6px;width:100%;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;"\/>';
+  d+='<p style="font-size:7pt;font-weight:700;margin:0 0 6px;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;">아래와 같이 견적 합니다.<\/p>';
 
   // 견적 금액 박스
   d+='<div class="qbox">';
