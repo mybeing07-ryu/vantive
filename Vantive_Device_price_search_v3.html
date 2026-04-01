@@ -472,8 +472,8 @@ function renderFavs(){
   var finalAmt=totalIncl+svcIncl-savings;
   html+='<div class="fav-summary" id="favSummaryBox">'
     +'<div class="fav-sum-title">&#128203; 견적 요약 ('+cnt+'개 품목)</div>'
-    +'<div class="fav-sum-row"><span class="fav-sum-label">소계 (VAT 별도)</span><span class="fav-sum-val">'+totalExcl.toLocaleString('ko-KR')+'원</span></div>'
-    +'<div class="fav-sum-row"><span class="fav-sum-label">소계 (VAT 포함)</span><span class="fav-sum-val">'+totalIncl.toLocaleString('ko-KR')+'원</span></div>'
+    +'<div class="fav-sum-row"><span class="fav-sum-label">소계 (VAT 별도)</span><span class="fav-sum-val" id="favSubtotalExcl">'+totalExcl.toLocaleString('ko-KR')+'원</span></div>'
+    +'<div class="fav-sum-row"><span class="fav-sum-label">소계 (VAT 포함)</span><span class="fav-sum-val" id="favSubtotalIncl">'+totalIncl.toLocaleString('ko-KR')+'원</span></div>'
     +'<hr class="fav-sum-divider">'
     +'<div class="fav-svc-row">'
     +'<input class="fav-svc-chk" type="checkbox" id="favSvcChk"'+(svcChecked?' checked':'')+' onchange="calcFavTotal()">'
@@ -540,11 +540,15 @@ function calcFavTotal(){
   var inp=document.getElementById('favDiscInput');
   var disc=parseFloat(inp?inp.value:0)||0;
   if(disc<0)disc=0; if(disc>100)disc=100;
-  var totalIncl=0;
+  var totalIncl=0, totalExcl=0;
   favs.forEach(function(code){
     var it=ITEMS.find(function(x){return String(x.code)===String(code);});
-    if(it)totalIncl+=it.incl*getFavQty(code);
+    if(it){var qty=getFavQty(code);totalIncl+=it.incl*qty;totalExcl+=it.excl*qty;}
   });
+  var exclEl=document.getElementById('favSubtotalExcl');
+  var inclEl=document.getElementById('favSubtotalIncl');
+  if(exclEl)exclEl.textContent=totalExcl.toLocaleString('ko-KR')+'원';
+  if(inclEl)inclEl.textContent=totalIncl.toLocaleString('ko-KR')+'원';
   // service fee
   var svcChk=document.getElementById('favSvcChk');
   var svcHrsEl=document.getElementById('favSvcHrs');
