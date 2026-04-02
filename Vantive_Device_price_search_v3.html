@@ -153,9 +153,6 @@ flex-shrink:0;-webkit-tap-highlight-color:transparent;}
 .fav-discount-input::-webkit-outer-spin-button,.fav-discount-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 .fav-discount-input:focus{border-color:rgba(255,250,235,0.75);background:rgba(255,250,235,0.2);}
 .fav-pct-symbol{font-size:15px;font-weight:700;opacity:.8;}
-.fav-discount-btns{display:flex;gap:5px;}
-.fav-dchip{border:1.5px solid rgba(255,250,235,0.35);background:rgba(255,250,235,0.1);border-radius:20px;color:rgba(255,250,235,0.8);font-size:11px;font-weight:700;padding:4px 9px;cursor:pointer;font-family:inherit;transition:all .15s;}
-.fav-dchip:active,.fav-dchip.on{background:rgba(255,250,235,0.28);border-color:rgba(255,250,235,0.7);color:var(--cream);}
 .fav-final-box{background:var(--pine);border-radius:12px;padding:14px 16px 14px;margin-top:14px;}.fav-final-row{display:flex;justify-content:space-between;align-items:baseline;}
 .fav-final-label{font-size:13px;font-weight:700;}
 .fav-final-val{font-size:20px;font-weight:800;letter-spacing:-0.5px;}
@@ -495,12 +492,7 @@ function renderFavs(){
     +'<div class="fav-discount-wrap">'
     +'<input class="fav-discount-input" id="favDiscInput" type="number" min="0" max="100" step="1" value="'+disc+'" oninput="calcFavTotal()" placeholder="0">'
     +'<span class="fav-pct-symbol">%</span>'
-    +'<div class="fav-discount-btns">'
-    +'<button class="fav-dchip'+(disc===5?' on':'')+'" onclick="setDisc(5)">5%</button>'
-    +'<button class="fav-dchip'+(disc===10?' on':'')+'" onclick="setDisc(10)">10%</button>'
-    +'<button class="fav-dchip'+(disc===15?' on':'')+'" onclick="setDisc(15)">15%</button>'
-    +'<button class="fav-dchip'+(disc===20?' on':'')+'" onclick="setDisc(20)">20%</button>'
-    +'</div></div></div>'
+    +'</div></div>'
     +'<div class="fav-final-box">'
     +'<div class="fav-final-row"><span class="fav-final-label">&#10003; 최종 금액 (VAT 포함)</span><span class="fav-final-val" id="favFinalAmt">'+finalAmt.toLocaleString('ko-KR')+'원</span></div>'
     +(function(){var lines=[];if(svcChecked)lines.push('서비스 요금 VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원 ('+svcHrs+'hr)');if(savings>0)lines.push('할인 -'+savings.toLocaleString('ko-KR')+'원 ('+disc+'%)');return lines.length?'<div class="fav-final-savings">'+lines.join(' · ')+'</div>':'';})()
@@ -572,10 +564,6 @@ function calcFavTotal(){
   var finalAmt=totalIncl+svcIncl-savings;
   var finalEl=document.getElementById('favFinalAmt');
   if(finalEl)finalEl.textContent=finalAmt.toLocaleString('ko-KR')+'원';
-  // update chip highlights
-  document.querySelectorAll('.fav-dchip').forEach(function(c){
-    c.classList.toggle('on', parseFloat(c.textContent)===disc);
-  });
   // update savings/detail line
   var box=document.getElementById('favSummaryBox');
   if(box){
@@ -596,10 +584,6 @@ function calcFavTotal(){
   }
 }
 
-function setDisc(v){
-  var inp=document.getElementById('favDiscInput');
-  if(inp){inp.value=v;calcFavTotal();}
-}
 
 function clearAllFavs(){
   if(!confirm('즐겨찾기를 모두 삭제하시겠습니까?'))return;
@@ -729,8 +713,10 @@ function printQuote(){
     '* Basic : Standard Rate(150,000 KRW/hour) * '+noteSvcHrs+' hours = '+noteSvcExcl.toLocaleString('ko-KR')+' KRW',
     '* Overtime : Standard Rate(150,000 KRW/hour) *1.5',
     '* Extended Overtime : Standard Rate(150,000 KRW/hour) * 2.0'];
-  if(disc>0)
+  if(disc>=1){
     notes.push('* 할인 '+disc+'% 적용: '+savings.toLocaleString('ko-KR')+'원 차감 (VAT포함 부품 소계 기준)');
+    notes.push('* 본 견적은 '+disc+'%의 할인율이 적용되었으므로 내부승인이 필요합니다.');
+  }
   if(memo)notes.push('\n'+memo);
 
   // ── CSS ───────────────────────────────────────────────────────────────────
@@ -743,7 +729,8 @@ function printQuote(){
   css+='.doc-title-wrap{flex:1;text-align:center;}';
   css+='.np{text-align:center;padding:7px 12px;background:#72256B;color:#fff;border-radius:6px;margin-bottom:10px;font-size:9pt;}';
   css+='.np button{background:#105742;color:#fff;border:none;padding:6px 20px;border-radius:5px;font-size:9.5pt;cursor:pointer;margin-left:10px;font-family:inherit;font-weight:700;}';
-  css+='@media print{body,td,th,*{font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif!important;font-size:6.5pt;}.np{display:none;}[contenteditable]:hover{background:transparent!important;}.g,.gwide,.rot,.ith th,.tot-g{background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}table,td,th{border-color:#888!important;}}';
+  css+='.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:88pt;font-weight:900;color:rgba(0,0,0,0.014);pointer-events:none;z-index:9999;white-space:nowrap;letter-spacing:0.12em;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif;}';
+  css+='@media print{body,td,th,*{font-family:"Aptos Narrow","Malgun Gothic","맑은 고딕",AppleGothic,sans-serif!important;font-size:6.5pt;}.np{display:none;}[contenteditable]:hover{background:transparent!important;}.g,.gwide,.rot,.ith th,.tot-g{background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}table,td,th{border-color:#888!important;}.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-35deg);font-size:88pt;font-weight:900;color:rgba(0,0,0,0.014);-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}}';
   css+='h1.dt{text-align:center;font-size:18pt;font-weight:900;letter-spacing:0.4em;padding:7px 0 6px;border-bottom:3px solid #333;margin-bottom:10px;}';
   css+='table{border-collapse:collapse;width:100%;table-layout:fixed;max-width:100%;}';
   css+='td,th{border:1px solid #888;padding:2px 3px;font-size:6pt;vertical-align:middle;overflow:hidden;word-break:break-all;}';
@@ -765,6 +752,7 @@ function printQuote(){
   d+='<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=794,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">';
   d+='<title>견적서 - Vantive Korea<\/title>';
   d+='<style>'+css+'<\/style><\/head><body>';
+  d+='<div class="wm">임시 견적<\/div>';
 
   // 편집 안내
   d+='<div class="np">✏️&nbsp; 노란색 셀은 클릭하여 직접 편집 가능';
