@@ -460,7 +460,7 @@ function renderFavs(){
   });
   // Summary section
   var disc=parseFloat(document.getElementById('favDiscInput')?document.getElementById('favDiscInput').value:0)||0;
-  if(disc<0)disc=0; if(disc>100)disc=100;
+  if(disc<-100)disc=-100; if(disc>100)disc=100;
   var svcChecked=document.getElementById('favSvcChk')?document.getElementById('favSvcChk').checked:false;
   var svcHrs=parseFloat(document.getElementById('favSvcHrs')?document.getElementById('favSvcHrs').value:1)||1;
   if(svcHrs<0)svcHrs=0;
@@ -488,14 +488,14 @@ function renderFavs(){
     +'</div>'
     +'</div></div>'
     +'<div class="fav-discount-row">'
-    +'<span class="fav-discount-label">할인율</span>'
+    +'<span class="fav-discount-label">할인 / 할증율</span>'
     +'<div class="fav-discount-wrap">'
-    +'<input class="fav-discount-input" id="favDiscInput" type="number" min="0" max="100" step="1" value="'+disc+'" oninput="calcFavTotal()" placeholder="0">'
+    +'<input class="fav-discount-input" id="favDiscInput" type="number" min="-100" max="100" step="1" value="'+disc+'" oninput="calcFavTotal()" placeholder="0">'
     +'<span class="fav-pct-symbol">%</span>'
     +'</div></div>'
     +'<div class="fav-final-box">'
     +'<div class="fav-final-row"><span class="fav-final-label">&#10003; 최종 금액 (VAT 포함)</span><span class="fav-final-val" id="favFinalAmt">'+finalAmt.toLocaleString('ko-KR')+'원</span></div>'
-    +(function(){var lines=[];if(svcChecked)lines.push('서비스 요금 VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원 ('+svcHrs+'hr)');if(savings>0)lines.push('할인 -'+savings.toLocaleString('ko-KR')+'원 ('+disc+'%)');return lines.length?'<div class="fav-final-savings">'+lines.join(' · ')+'</div>':'';})()
+    +(function(){var lines=[];if(svcChecked)lines.push('서비스 요금 VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원 ('+svcHrs+'hr)');if(savings>0)lines.push('할인 -'+savings.toLocaleString('ko-KR')+'원 ('+disc+'%)');else if(savings<0)lines.push('할증 +'+Math.abs(savings).toLocaleString('ko-KR')+'원 ('+Math.abs(disc)+'%)');return lines.length?'<div class="fav-final-savings">'+lines.join(' · ')+'</div>':'';})()
     +'<button class="fav-clear-btn" onclick="clearAllFavs()">&#128465; 즐겨찾기 전체 삭제</button>'
     +'</div>'
     +'<div class="fav-memo-wrap">'
@@ -532,7 +532,7 @@ function changeFavQty(code,delta){
 function calcFavTotal(){
   var inp=document.getElementById('favDiscInput');
   var disc=parseFloat(inp?inp.value:0)||0;
-  if(disc<0)disc=0; if(disc>100)disc=100;
+  if(disc<-100)disc=-100; if(disc>100)disc=100;
   var totalIncl=0, totalExcl=0;
   favs.forEach(function(code){
     var it=ITEMS.find(function(x){return String(x.code)===String(code);});
@@ -571,6 +571,7 @@ function calcFavTotal(){
     var detLines=[];
     if(svcChecked)detLines.push('서비스 요금 VAT포함 '+svcIncl.toLocaleString('ko-KR')+'원 ('+svcHrs+'hr)');
     if(savings>0)detLines.push('할인 -'+savings.toLocaleString('ko-KR')+'원 ('+disc+'%)');
+    else if(savings<0)detLines.push('할증 +'+Math.abs(savings).toLocaleString('ko-KR')+'원 ('+Math.abs(disc)+'%)');
     if(detLines.length>0){
       if(!savEl){
         savEl=document.createElement('div');
@@ -651,7 +652,7 @@ function printQuote(){
 
   var discInp=document.getElementById('favDiscInput');
   var disc=parseFloat(discInp?discInp.value:0)||0;
-  if(disc<0)disc=0;if(disc>100)disc=100;
+  if(disc<-100)disc=-100;if(disc>100)disc=100;
 
   var totalIncl=Math.round(ptotalExcl*1.1);
   var subtotalExcl=ptotalExcl+svcExcl;
@@ -699,9 +700,12 @@ function printQuote(){
   }
 
   // ── 할인 행 ──────────────────────────────────────────────────────────────
-  var discH=disc>0
-    ?'<tr><td colspan="6" style="text-align:center;font-weight:700;font-size:6pt;background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;">할인 ('+disc+'%)</td>'
-     +'<td colspan="2" style="text-align:right;padding-right:6px;font-weight:700;color:#a00;">-'+savings.toLocaleString('ko-KR')+'</td></tr>'
+  var discH=disc!==0
+    ?(disc>0
+      ?'<tr><td colspan="6" style="text-align:center;font-weight:700;font-size:6pt;background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;">할인 ('+disc+'%)</td>'
+       +'<td colspan="2" style="text-align:right;padding-right:6px;font-weight:700;color:#a00;">-'+savings.toLocaleString('ko-KR')+'</td></tr>'
+      :'<tr><td colspan="6" style="text-align:center;font-weight:700;font-size:6pt;background:#cccccc!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;">할증 ('+Math.abs(disc)+'%)</td>'
+       +'<td colspan="2" style="text-align:right;padding-right:6px;font-weight:700;color:#00a;">+'+Math.abs(savings).toLocaleString('ko-KR')+'</td></tr>')
     :'';
 
   // ── 특이사항 내용 ─────────────────────────────────────────────────────────
@@ -716,6 +720,9 @@ function printQuote(){
   if(disc>=1){
     notes.push('* 할인 '+disc+'% 적용: '+savings.toLocaleString('ko-KR')+'원 차감 (VAT포함 부품 소계 기준)');
     notes.push('* 본 견적은 '+disc+'%의 할인율이 적용되었으므로 내부승인이 필요합니다.');
+  }
+  if(disc<=-1){
+    notes.push('* 할증 '+Math.abs(disc)+'% 적용: '+Math.abs(savings).toLocaleString('ko-KR')+'원 추가 (VAT포함 부품 소계 기준)');
   }
   if(memo)notes.push('\n'+memo);
 
