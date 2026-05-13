@@ -1055,22 +1055,44 @@
     overlay.classList.remove('show');
   }
 
-  /* ── Password Gate ───────────────────────────── */
+  /* ── Password Gate (보안 강화 v2) ───────────────
+   *  ① SHA-256 해시 비밀번호 — 소스에 평문 없음
+   *  ② 5회 실패 → 15분 잠금 (localStorage 지속)
+   *  ③ 8시간 세션 만료 — 자동 로그아웃
+   *
+   *  비밀번호 변경 시:
+   *    https://emn178.github.io/online-tools/sha256.html 에서
+   *    새 비밀번호의 SHA-256 해시 값을 구해 CORRECT_HASH를 교체하세요.
+   * ─────────────────────────────────────────────── */
   (function initPasswordGate() {
-    const CORRECT_PW = '65505';          // ← 비밀번호 변경 시 여기 수정
-    const SESSION_KEY = 'vantive_tw_auth';
+    // ① 비밀번호 해시 (SHA-256) — 원문: 관리자에게 문의
+    const CORRECT_HASH   = '3117f7aab1d822bef0c6e408c474112e9c276c620d9b36309645e5e23e6d384a';
+
+    const SESSION_KEY    = 'vantive_tw_auth';
+    const SESSION_EXP    = 'vantive_tw_exp';    // 세션 만료 시각 (ms)
+    const LOCK_KEY       = 'vantive_tw_lock';   // 잠금 해제 시각 (ms)
+    const ATTEMPT_KEY    = 'vantive_tw_tries';  // 누적 실패 횟수
+
+    const MAX_ATTEMPTS   = 5;
+    const LOCK_MS        = 15 * 60 * 1000;      // 15분
+    const SESSION_MS     = 8  * 60 * 60 * 1000; // 8시간
 
     const gate  = document.getElementById('pw-gate');
     const input = document.getElementById('pw-input');
     const errEl = document.getElementById('pw-error');
+    const btn   = document.querySelector('.pw-btn');
 
-    // 이미 인증된 세션이면 바로 해제
-    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    // ── ③ 세션 유효성 확인 ──────────────────────────
+    const now    = Date.now();
+    const expiry = parseInt(sessionStorage.getItem(SESSION_EXP) || '0');
+    if (sessionStorage.getItem(SESSION_KEY) === '1' && expiry > now) {
       gate.style.display = 'none';
       return;
     }
+    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_EXP);
 
-    // 로고 Canvas 처리 — base64 방식 (CORS 없음, processWelcomeLogo와 동일)
+    // ── 로고 Canvas 처리 (기존 유지) ────────────────
     (function processPwLogo() {
       const img = document.getElementById('pw-logo');
       if (!img) return;
@@ -1094,31 +1116,96 @@
         };
         tmp.src = dataUrl;
       }
-      // window._LOGO_B64는 processWelcomeLogo가 먼저 세팅함
       if (window._LOGO_B64) {
         applyPine(window._LOGO_B64);
       } else {
-        // fallback: processWelcomeLogo 완료 후 실행되도록 대기
         const t = setInterval(function(){
           if (window._LOGO_B64) { clearInterval(t); applyPine(window._LOGO_B64); }
         }, 30);
       }
     })();
 
-    setTimeout(()=>input && input.focus(), 100);
+    // ── ① SHA-256 해시 함수 (WebCrypto API) ─────────
+    async function sha256(message) {
+      const buf  = new TextEncoder().encode(message);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash))
+                  .map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-    window.pwSubmit = function() {
-      const val = input.value;
-      if (val === CORRECT_PW) {
+    // ── ② 잠금 UI ───────────────────────────────────
+    function startLockoutUI(lockUntil) {
+      input.disabled = true;
+      btn.disabled   = true;
+      btn.style.opacity = '0.5';
+      function tick() {
+        const rem = Math.ceil((lockUntil - Date.now()) / 1000);
+        if (rem <= 0) {
+          input.disabled  = false;
+          btn.disabled    = false;
+          btn.style.opacity = '';
+          errEl.textContent = '';
+          localStorage.removeItem(LOCK_KEY);
+          localStorage.setItem(ATTEMPT_KEY, '0');
+          input.focus();
+          return;
+        }
+        const m = Math.floor(rem / 60), s = rem % 60;
+        errEl.textContent = `🔒 ${m}분 ${String(s).padStart(2,'0')}초 후 재시도 가능`;
+        errEl.style.color = '#c0392b';
+        setTimeout(tick, 1000);
+      }
+      tick();
+    }
+
+    // 페이지 로드 시 기존 잠금 복원
+    const lockUntil = parseInt(localStorage.getItem(LOCK_KEY) || '0');
+    if (lockUntil > now) {
+      startLockoutUI(lockUntil);
+    } else {
+      setTimeout(() => input && input.focus(), 100);
+    }
+
+    // ── 로그인 처리 ──────────────────────────────────
+    window.pwSubmit = async function() {
+      if (input.disabled) return;
+      const val = input.value.trim();
+      if (!val) return;
+
+      // 잠금 재확인
+      const lk = parseInt(localStorage.getItem(LOCK_KEY) || '0');
+      if (lk > Date.now()) { startLockoutUI(lk); return; }
+
+      const hash = await sha256(val);
+
+      if (hash === CORRECT_HASH) {
+        // ✅ 인증 성공
+        localStorage.setItem(ATTEMPT_KEY, '0');
+        localStorage.removeItem(LOCK_KEY);
+        const exp = Date.now() + SESSION_MS;
         sessionStorage.setItem(SESSION_KEY, '1');
+        sessionStorage.setItem(SESSION_EXP, String(exp));
         gate.classList.add('hiding');
-        setTimeout(()=>{ gate.style.display='none'; }, 300);
+        setTimeout(() => { gate.style.display = 'none'; }, 300);
+
       } else {
-        errEl.textContent = '비밀번호가 올바르지 않습니다.';
+        // ❌ 인증 실패
+        const tries = parseInt(localStorage.getItem(ATTEMPT_KEY) || '0') + 1;
+        localStorage.setItem(ATTEMPT_KEY, String(tries));
         input.value = '';
-        input.focus();
         input.style.borderColor = '#c0392b';
-        setTimeout(()=>{ input.style.borderColor=''; errEl.textContent=''; }, 2000);
+        setTimeout(() => { input.style.borderColor = ''; }, 2000);
+
+        if (tries >= MAX_ATTEMPTS) {
+          const newLock = Date.now() + LOCK_MS;
+          localStorage.setItem(LOCK_KEY, String(newLock));
+          startLockoutUI(newLock);
+        } else {
+          const left = MAX_ATTEMPTS - tries;
+          errEl.textContent = `비밀번호가 올바르지 않습니다. (${left}회 남음)`;
+          setTimeout(() => { errEl.textContent = ''; }, 2500);
+          input.focus();
+        }
       }
     };
 
