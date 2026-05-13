@@ -611,6 +611,39 @@
       opacity: 0.75;
     }
 
+    /* ── Notice Banner ───────────────────────────── */
+    .pw-notice {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(114,37,107,0.07);
+      border: 2px solid rgba(114,37,107,0.22);
+      border-radius: 18px;
+      padding: 17px 24px;
+      margin-bottom: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+      font-size: 19px;
+      color: #5a1a54;
+      line-height: 1.5;
+    }
+    .pw-notice-icon {
+      flex-shrink: 0;
+      width: 27px; height: 27px;
+      opacity: 0.7;
+    }
+    .pw-notice a {
+      color: var(--plum);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(114,37,107,0.4);
+      transition: color .15s, text-decoration-color .15s;
+    }
+    .pw-notice a:hover {
+      color: var(--plum-dark);
+      text-decoration-color: var(--plum-dark);
+    }
+
     /* Welcome screen internal badge */
     .welcome-internal-badge {
       display: flex;
@@ -651,7 +684,15 @@
     <span class="internal-badge-text">Internal Use Only</span>
     <div class="internal-badge-line right"></div>
   </div>
-  <div class="pw-box">
+  <div class="pw-notice">
+    <svg class="pw-notice-icon" viewBox="0 0 24 24" fill="none" stroke="#72256B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span>사이트 주소가 변경되었습니다. &nbsp;<a href="https://vantive-kr.github.io/techwiki/Vantive_Techwiki_index_pw.html" target="_blank">Techwiki site 이동 →</a></span>
+  </div>
+  <div class="pw-box" style="display:none">
     <div class="pw-title">접근 비밀번호 입력</div>
     <div class="pw-desc">이 페이지는 인가된 사용자만<br>접근할 수 있습니다.</div>
     <div class="pw-input-wrap">
